@@ -1,0 +1,25 @@
+{
+  "name": "websocket-exploration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "realtime": "node src/real_time_socket.js"
+  },
+  "keywords": [],
+  "author": "Jelte Dirks <j.dirks@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "protobufjs": "^7.2.3",
+    "ws": "^8.13.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.7",
+    "utf-8-validate": "^6.0.3"
+  },
+  "devDependencies": {
+    "glob": "^10.2.6"
+  }
+}
