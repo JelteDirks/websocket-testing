@@ -1,5 +1,4 @@
 const ws = require("ws")
-const bench = require("./src/bench")
 
 const ws_server_options_defaults = {
   port: 3000,
@@ -25,16 +24,31 @@ const history_object = {
       }
     ]
   }
-
 };
 
 const login_object = {
   message_type: "login",
   message: {
-    username: "user",
-    password_hash: "asdf"
+    username: "peercode",
+    password: "12345"
   }
 };
+
+const visualization = {
+  message_type: "get_visualization",
+  message: {
+    svg_name: "dbenv"
+  }
+}
+
+const bad_login_object = {
+  message_type: "login",
+  message: {
+    username: "bad",
+    password: "12345"
+  }
+}
+
 
 // override default server options with env variables here (from .env)
 const ws_options = Object.assign(ws_server_options_defaults, {})
@@ -43,9 +57,14 @@ const ws_server = new ws.WebSocket(`ws://${ws_options.host}:${ws_options.port}`)
 
 ws_server.onopen = function() {
   console.log("open");
-  login();
-  // setTimeout(history, 1_000);
-  setTimeout(logs, 1_000);
+  setTimeout(login, 0);
+  setTimeout(viz, 1_000);
+
+  setTimeout(function() {
+    console.log("closing...");
+    ws_server.close()
+    process.exit();
+  }, 10_000);
 }
 
 ws_server.onmessage = function(msg) {
@@ -54,6 +73,18 @@ ws_server.onmessage = function(msg) {
 
 ws_server.onclose = function() {
   console.log("close");
+}
+
+function viz() {
+  const l = JSON.stringify(visualization);
+  console.log("sending", l);
+  ws_server.send(l);
+}
+
+function bad_login() {
+  const l = JSON.stringify(bad_login_object);
+  console.log("sending", l);
+  ws_server.send(l);
 }
 
 function login() {
