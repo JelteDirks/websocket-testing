@@ -49,6 +49,47 @@ const bad_login_object = {
   }
 }
 
+const set_anchor_data_object = {
+  "message_type": "set_anchor_data",
+  "message": [
+    {
+      "anchor_id": "2086079342",
+      "anchor_name": "Testname 1",
+      "location": {
+        "x": 2.80, "y": 0.0,
+        "floor_name": "floor 1",
+        "group_name": "group 1",
+      },
+    },
+    {
+      "anchor_id": "1715682271",
+      "location": {
+        "x": 2.80, "y": 2.74,
+        "group_name": "group 2",
+        "floor_name": "floor 1"
+      }
+    },
+    {
+      "anchor_id": "378522829",
+      "anchor_name": "Testname 3",
+      "location": {
+        "x": 0.0, "y": 0.0,
+        "group_name": "group 1",
+        "floor_name": "floor 1"
+      }
+    },
+    {
+      "anchor_id": "580348575",
+      "location": {
+        "x": 0.0, "y": 2.74,
+        "group_name": "group 1",
+        "floor_name": "floor 1"
+      }
+    }
+  ]
+}
+
+
 
 // override default server options with env variables here (from .env)
 const ws_options = Object.assign(ws_server_options_defaults, {})
@@ -57,14 +98,15 @@ const ws_server = new ws.WebSocket(`ws://${ws_options.host}:${ws_options.port}`)
 
 ws_server.onopen = function() {
   console.log("open");
-  setTimeout(login, 0);
-  setTimeout(viz, 1_000);
+  setTimeout(bad_login, 0);
+  setTimeout(login, 500);
+  setTimeout(anchor, 1_000);
 
   setTimeout(function() {
     console.log("closing...");
     ws_server.close()
     process.exit();
-  }, 10_000);
+  }, 5_000);
 }
 
 ws_server.onmessage = function(msg) {
@@ -73,6 +115,12 @@ ws_server.onmessage = function(msg) {
 
 ws_server.onclose = function() {
   console.log("close");
+}
+
+function anchor() {
+  const l = JSON.stringify(set_anchor_data_object);
+  console.log("sending", l);
+  ws_server.send(l);
 }
 
 function viz() {
