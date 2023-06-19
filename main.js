@@ -18,9 +18,9 @@ const history_object = {
   message: {
     requests: [
       {
-        tag_id: "12345",
-        start_time_msue: 1686296659639,
-        end_time_msue: 1686297040235
+        tag_id: "1234",
+        start_time_msue: new Date(2023, 5, 14, 10, 0, 0).getTime(),
+        end_time_msue: new Date(2023, 5, 15, 0, 0, 0).getTime()
       }
     ]
   }
@@ -56,7 +56,7 @@ const set_anchor_data_object = {
       "anchor_id": "2086079342",
       "anchor_name": "Testname 1",
       "location": {
-        "x": 2.80, "y": 0.0,
+        "X": 2.80, "Y": 0.0, "Z": 0.12,
         "floor_name": "floor 1",
         "group_name": "group 1",
       },
@@ -64,7 +64,7 @@ const set_anchor_data_object = {
     {
       "anchor_id": "1715682271",
       "location": {
-        "x": 2.80, "y": 2.74,
+        "X": 2.80, "Y": 2.74, "Z": 0.12,
         "group_name": "group 2",
         "floor_name": "floor 1"
       }
@@ -73,7 +73,7 @@ const set_anchor_data_object = {
       "anchor_id": "378522829",
       "anchor_name": "Testname 3",
       "location": {
-        "x": 0.0, "y": 0.0,
+        "X": 0.0, "Y": 0.0, "Z": 0.12,
         "group_name": "group 1",
         "floor_name": "floor 1"
       }
@@ -81,7 +81,7 @@ const set_anchor_data_object = {
     {
       "anchor_id": "580348575",
       "location": {
-        "x": 0.0, "y": 2.74,
+        "X": 0.0, "Y": 2.74, "Z": 0.12,
         "group_name": "group 1",
         "floor_name": "floor 1"
       }
@@ -90,17 +90,27 @@ const set_anchor_data_object = {
 }
 
 
-
 // override default server options with env variables here (from .env)
 const ws_options = Object.assign(ws_server_options_defaults, {})
 
-const ws_server = new ws.WebSocket(`ws://${ws_options.host}:${ws_options.port}`)
+let ws_server;
+
+function connect() {
+  ws_server = new ws.WebSocket(`ws://${ws_options.host}:${ws_options.port}`);
+
+}
+
+connect();
+
+ws_server.addEventListener('error', (err) => {
+  console.error(err);
+  setTimeout(connect, 3000);
+});
 
 ws_server.onopen = function() {
   console.log("open");
-  setTimeout(bad_login, 0);
   setTimeout(login, 500);
-  setTimeout(anchor, 1_000);
+  setTimeout(history, 1_000);
 
   setTimeout(function() {
     console.log("closing...");
@@ -114,7 +124,7 @@ ws_server.onmessage = function(msg) {
 }
 
 ws_server.onclose = function() {
-  console.log("close");
+  console.log("...closed");
 }
 
 function anchor() {
