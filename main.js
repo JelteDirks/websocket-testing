@@ -8,8 +8,19 @@ const ws_server_options_defaults = {
 const logs_object = {
   message_type: "get_logs",
   message: {
-    start_time_msue: 1686296659639,
-    end_time_msue: 1686297040235,
+  }
+};
+
+const history_object_new = {
+  message_type: "get_history",
+  message: {
+    requests: [
+      {
+        tag_id: "24050369",
+        start_time_msue: Date.now() - 10000000,
+        end_time_msue: Date.now()
+      }
+    ]
   }
 };
 
@@ -19,8 +30,8 @@ const history_object = {
     requests: [
       {
         tag_id: "1234",
-        start_time_msue: new Date(2023, 5, 14, 10, 0, 0).getTime(),
-        end_time_msue: new Date(2023, 5, 15, 0, 0, 0).getTime()
+        start_time_msue: 0,
+        end_time_msue: new Date().getTime()
       }
     ]
   }
@@ -95,28 +106,12 @@ const ws_options = Object.assign(ws_server_options_defaults, {})
 
 let ws_server;
 
-function connect() {
-  ws_server = new ws.WebSocket(`ws://${ws_options.host}:${ws_options.port}`);
-
-}
-
-connect();
-
-ws_server.addEventListener('error', (err) => {
-  console.error(err);
-  setTimeout(connect, 3000);
-});
+ws_server = new ws.WebSocket(`ws://${ws_options.host}:${ws_options.port}`);
 
 ws_server.onopen = function() {
   console.log("open");
   setTimeout(login, 500);
-  setTimeout(history, 1_000);
-
-  setTimeout(function() {
-    console.log("closing...");
-    ws_server.close()
-    process.exit();
-  }, 5_000);
+  setTimeout(history, 1000);
 }
 
 ws_server.onmessage = function(msg) {
