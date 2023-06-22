@@ -60,46 +60,99 @@ const bad_login_object = {
   }
 }
 
-const set_anchor_data_object = {
-  "message_type": "set_anchor_data",
-  "message": [
+const anchor_live = {
+  message_type: 'set_anchor_data',
+  message: [
     {
-      "anchor_id": "2086079342",
-      "anchor_name": "Testname 1",
-      "location": {
-        "X": 2.80, "Y": 0.0, "Z": 0.12,
-        "floor_name": "floor 1",
-        "group_name": "group 1",
-      },
-    },
-    {
-      "anchor_id": "1715682271",
-      "location": {
-        "X": 2.80, "Y": 2.74, "Z": 0.12,
-        "group_name": "group 2",
-        "floor_name": "floor 1"
+      anchor_id: '749951546',
+      anchor_name: 'triplemid',
+      location: {
+        X: 7.35399,
+        Y: 15.0361,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'erik'
       }
     },
     {
-      "anchor_id": "378522829",
-      "anchor_name": "Testname 3",
-      "location": {
-        "X": 0.0, "Y": 0.0, "Z": 0.12,
-        "group_name": "group 1",
-        "floor_name": "floor 1"
+      anchor_id: '381010256',
+      anchor_name: 'roelabovecabinet',
+      location: {
+        X: 7.35399,
+        Y: -0.20,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'roel'
       }
     },
     {
-      "anchor_id": "580348575",
-      "location": {
-        "X": 0.0, "Y": 2.74, "Z": 0.12,
-        "group_name": "group 1",
-        "floor_name": "floor 1"
+      anchor_id: '1486462805',
+      anchor_name: 'booksright',
+      location: {
+        X: 0.10,
+        Y: 0.10,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'erik'
+      }
+    },
+    {
+      anchor_id: '580348575',
+      anchor_name: 'booksleft',
+      location: {
+        X: 0.10,
+        Y: 2.75436,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'erik'
+      }
+    },
+    {
+      anchor_id: '1759330419',
+      anchor_name: 'tripleright',
+      location: {
+        X: 7.35399,
+        Y: 2.75436,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'erik'
+      }
+    },
+    {
+      anchor_id: '1247604541',
+      anchor_name: 'tripleleft',
+      location: {
+        X: 7.35399,
+        Y: 0.1,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'erik'
+      }
+    },
+    {
+      anchor_id: '215247431',
+      anchor_name: 'Pillar',
+      location: {
+        X: 5.91952,
+        Y: -7.01314,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'roel'
+      }
+    },
+    {
+      anchor_id: '378522829',
+      anchor_name: 'roelabovedoor',
+      location: {
+        X: 3.75967,
+        Y: -0.2,
+        Z: 0.0,
+        floor_name: 'Floor 1',
+        group_name: 'roel'
       }
     }
   ]
-}
-
+};
 
 // override default server options with env variables here (from .env)
 const ws_options = Object.assign(ws_server_options_defaults, {})
@@ -111,7 +164,12 @@ ws_server = new ws.WebSocket(`ws://${ws_options.host}:${ws_options.port}`);
 ws_server.onopen = function() {
   console.log("open");
   setTimeout(login, 500);
-  setTimeout(history, 1000);
+  setTimeout(anchor, 1000);
+
+  setTimeout(() => {
+    ws_server.close();
+    process.exit();
+  }, 5_000);
 }
 
 ws_server.onmessage = function(msg) {
@@ -123,7 +181,7 @@ ws_server.onclose = function() {
 }
 
 function anchor() {
-  const l = JSON.stringify(set_anchor_data_object);
+  const l = JSON.stringify(anchor_live);
   console.log("sending", l);
   ws_server.send(l);
 }
